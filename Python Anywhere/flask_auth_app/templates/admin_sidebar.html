@@ -1,0 +1,68 @@
+<style>
+    :root {
+        --primary-color: #4e73df;
+        --secondary-color: #f8f9fc;
+        --accent-color: #1cc88a;
+    }
+    .sidebar {
+        background: linear-gradient(180deg, var(--primary-color) 0%, #224abe 100%);
+        min-height: 100vh;
+        color: white;
+    }
+    .sidebar .nav-link {
+        color: rgba(255, 255, 255, 0.8);
+        margin-bottom: 5px;
+    }
+    .sidebar .nav-link:hover {
+        color: white;
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+    .sidebar .nav-link.active {
+        color: white;
+        font-weight: bold;
+    }
+    .bg-primary-custom {
+        background-color: var(--primary-color) !important;
+    }
+</style>
+
+<!-- Admin Sidebar Component -->
+<div id='sidebar' class="col-md-3 col-lg-2 d-md-block sidebar collapse bg-primary-custom p-0">
+    <div class="position-sticky pt-3">
+        <div class="text-center py-4">
+            <h4 class="text-white"><i class="fas fa-user-shield me-2"></i>Admin Panel</h4>
+        </div>
+        <ul class="nav flex-column px-3">
+            <li class="nav-item">
+                <a class="nav-link {% if request.endpoint == 'admin_dashboard' %}active{% endif %}" href="{{ url_for('admin_dashboard') }}">
+                    <i class="fas fa-fw fa-tachometer-alt me-2"></i>Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+            <a class="nav-link {% if request.endpoint == 'admin_browse_theses' %}active{% endif %}" href="{{ url_for('admin_browse_theses') }}">
+                <i class="fas fa-fw fa-book me-2"></i>Published Theses
+            </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if request.endpoint == 'admin_submissions' %}active{% endif %}" href="{{ url_for('admin_submissions') }}">
+                    <i class="fas fa-fw fa-file-alt me-2"></i>Thesis Submissions
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if request.endpoint == 'admin_action_history' %}active{% endif %}" href="{{ url_for('admin_action_history') }}">
+                    <i class="fas fa-history me-2"></i>Action History
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if request.endpoint == 'manage_users' %}active{% endif %}" href="{{ url_for('manage_users') }}">
+                    <i class="fas fa-users me-2"></i>Users
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if request.endpoint == 'manage_trash' %}active{% endif %}" href="{{ url_for('manage_trash') }}">
+                    <i class="fas fa-trash me-2"></i>Trash
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>

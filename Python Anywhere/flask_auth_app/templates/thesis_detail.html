@@ -1,0 +1,124 @@
+{% extends "admin_base.html" %}
+
+{% block content %}
+<button class="btn btn-primary d-md-none m-3" 
+        type="button" 
+        data-bs-toggle="collapse" 
+        data-bs-target=".sidebar" 
+        aria-expanded="false" 
+        aria-label="Toggle sidebar">
+    <i class="fas fa-bars"></i>
+</button>
+<!-- Bootstrap 5 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<!-- Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<div class="row">
+    <!-- Sidebar -->
+        {% include 'admin_sidebar.html' %}
+
+    <!-- Main Content -->
+    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+        <!-- Header with Title -->
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+            <h2 class="h2">
+                <i class="fas fa-book me-2"></i> Thesis Details
+            </h2>
+        </div>
+
+        <!-- Thesis Content -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h2 class="mb-0">{{ thesis.title }}</h2>
+                <a href="{{ url_for('browse_theses') }}" class="btn btn-sm btn-outline-secondary">
+                    <i class="fas fa-arrow-left"></i> Back
+                </a>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <p><strong>Authors:</strong> {{ thesis.authors }}</p>
+                        <p><strong>School:</strong> {{ thesis.school }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Year:</strong> {{ thesis.year_made }}</p>
+                        <p><strong>Published:</strong> {{ thesis.published_at.strftime('%Y-%m-%d') }}</p>
+                        <p><strong>Publisher:</strong> {{ thesis.publisher_username }}</p>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <h5>Keywords</h5>
+                    <div class="d-flex flex-wrap gap-2">
+                        {% for keyword in thesis.keywords.split(',') %}
+                            <span class="badge bg-primary">{{ keyword.strip() }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- PDF Embed -->
+                <div class="pdf-viewer mt-4">
+                    {% if thesis.file_path and thesis.file_path.lower().endswith('.pdf') %}
+                        <iframe 
+                            src="{{ url_for('serve_thesis_file', thesis_id=thesis.id) }}" 
+                            class="w-100 border rounded"
+                            style="height: 600px;">
+                            Your browser does not support PDFs.
+                        </iframe>
+                    {% else %}
+                        <div class="alert alert-warning d-flex align-items-center">
+                            <i class="fas fa-exclamation-circle me-2"></i>
+                            Thesis PDF not available.
+                            {% if current_user.is_admin() %}
+                                <a href="{{ url_for('edit_published_thesis', thesis_id=thesis.id) }}" class="ms-2 alert-link">
+                                    Upload PDF
+                                </a>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="card-footer bg-light d-flex justify-content-between">
+                <a href="{{ url_for('edit_published_thesis', thesis_id=thesis.id) }}" class="btn btn-sm btn-primary">
+                    <i class="fas fa-edit"></i> Edit
+                </a>
+                <form action="{{ url_for('delete_published_thesis', thesis_id=thesis.id) }}" method="POST" class="mb-0">
+                    <button type="submit" class="btn btn-sm btn-danger"
+                        onclick="return confirm('Are you sure you want to permanently delete this thesis?')">
+                        <i class="fas fa-trash-alt"></i> Delete
+                    </button>
+                </form>
+            </div>
+        </div>
+    </main>
+</div>
+
+<style>
+    .sidebar {
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        overflow-y: auto;
+        background-color: #f8f9fa;
+        border-right: 1px solid #dee2e6;
+        padding: 20px;
+    }
+    
+    .pdf-viewer iframe {
+        border: 1px solid #ccc;
+        border-radius: 8px;
+    }
+    
+    @media (max-width: 767.98px) {
+        .sidebar {
+            position: fixed;
+            z-index: 1000;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+    }
+</style>
+
+{% endblock %}
